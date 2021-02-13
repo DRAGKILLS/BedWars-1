@@ -1,13 +1,12 @@
-name: Bedwars
+name: BedWars
 version: 0.1
-api: 1.15.0
+api: 3.0.0
 main: Epic\Bedwars
-author: EpicSteve33
-OriginalAuthor: BluPlayz
+author: bittch
 website: http://www.kcmcpe.net
 commands:
-    Bedwars:
-        description: Bedwars Main Command
+    bedwars:
+        description: BedWars Main Command
         aliases: [bw]
-    Start:
+    start:
         description: Bedwars Forcestart Command
