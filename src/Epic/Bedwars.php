@@ -40,7 +40,7 @@ use pocketmine\nbt\tag\ShortTag;
 use pocketmine\nbt\tag\StringTag;
 use pocketmine\Player;
 use pocketmine\plugin\PluginBase;
-use pocketmine\scheduler\PluginTask;
+use pocketmine\scheduler\Task as PluginTask;
 use pocketmine\tile\Chest;
 use pocketmine\tile\Sign;
 use pocketmine\tile\Tile;
@@ -164,8 +164,8 @@ class Bedwars extends PluginBase implements Listener {
         }
 
 
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
-        $this->getServer()->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
+        $this->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
+        $this->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
 
     }
     ############################################################################################################
@@ -762,8 +762,8 @@ class Bedwars extends PluginBase implements Listener {
 
     public function onTransaction(InventoryTransactionEvent $event)
     {
-        $trans = $event->getTransaction()->getTransactions();
-        $inv = $event->getTransaction()->getInventories();
+        $trans = $event->getInventory())->getTransactions();
+        $inv = $event->getInventories();
 
         $player = null;
         $chestBlock = null;
@@ -1346,10 +1346,10 @@ class Bedwars extends PluginBase implements Listener {
     ############################################################################################################
     ############################################################################################################
 
-    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args){
+    public function onCommand(CommandSender $sender, Command $cmd, $label, array $args): bool{
 
         $name = $sender->getName();
-        if($cmd->getName() == "Start" && $sender->hasPermission("bw.forcestart")){
+        if($cmd->getName() == "start" and $sender->hasPermission("bw.forcestart")){
             if($sender instanceof Player){
                 if($this->inArena($sender)){
                     $arena = $this->getArena($sender);
@@ -1363,7 +1363,7 @@ class Bedwars extends PluginBase implements Listener {
                 }
             }
         }
-        if($cmd->getName() == "Bedwars" && $sender->isOP()){
+        if($cmd->getName() == "bw" && $sender->isOP()){
             if(!empty($args[0])){
                 if(strtolower($args[0]) == "help" && $sender->isOP()){
                     $sender->sendMessage(TextFormat::GRAY."===============");
@@ -1376,7 +1376,7 @@ class Bedwars extends PluginBase implements Listener {
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw setbed <Arena> <Team>".TextFormat::GRAY."[".TextFormat::RED."Sets Beds For team".TextFormat::GRAY."]");
                     $sender->sendMessage(TextFormat::GRAY."===============");
                 }
-                elseif(strtolower($args[0]) == "regsign" && $sender->isOP()){
+                elseif($args[0] == "regsign" && $sender->isOP()){
                     if(!empty($args[1])) {
                         $arena = $args[1];
                         if($this->arenaExists($arena)) {
@@ -1391,7 +1391,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw regsign <ArenaName>");
                     }
                 }
-                elseif(strtolower($args[0]) == "savemaps" && $sender->isOP()){
+                elseif($args[0] == "savemaps" && $sender->isOP()){
                     if(!empty($args[1])) {
                         $arena = $args[1];
                         if($this->arenaExists($arena)) {
@@ -1404,7 +1404,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw savemaps <ArenaName>");
                     }
                 }
-                elseif(strtolower($args[0]) == "addarena" && $sender->isOP()){
+                elseif($args[0] == "addarena" && $sender->isOP()){
                     if(!empty($args[1]) && !empty($args[2]) && !empty($args[3])) {
                         $arena = $args[1];
                         $teams = (int)$args[2];
@@ -1422,7 +1422,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw addarena <ArenaName> <Teams> <PlayerProTeam>");
                     }
                 }
-                elseif(strtolower($args[0]) == "setlobby" && $sender->isOP()){
+                elseif($args[0] == "setlobby" && $sender->isOP()){
                     if(!empty($args[1])) {
                         $arena = $args[1];
                         if($this->arenaExists($arena)) {
@@ -1439,7 +1439,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw setlobby <ArenaName>");
                     }
                 }
-                elseif(strtolower($args[0]) == "setbed" && $sender->isOP()){
+                elseif($args[0] == "setbed" && $sender->isOP()){
                     if(!empty($args[1]) && !empty($args[2])) {
                         $arena = $args[1];
                         $team = $args[2];
@@ -1466,7 +1466,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw setbed <ArenaName> <Team>");
                     }
                 }
-                elseif(strtolower($args[0]) == "setspawn" && $sender->isOP()){
+                elseif($args[0] == "setspawn" && $sender->isOP()){
                     if(!empty($args[1]) && !empty($args[2])) {
                         $arena = $args[1];
                         $team = $args[2];
@@ -1492,7 +1492,7 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw setspawn <ArenaName> <Team>");
                     }
                 }
-                elseif(strtolower($args[0]) == "test" && $sender->isOP()){
+                elseif($args[0] == "test" && $sender->isOP()){
                     $this->createVillager($sender->getX(), $sender->getY(), $sender->getZ(), $sender->getLevel());
                 } else {
                     $this->getServer()->dispatchCommand($sender, "bw help");
@@ -1512,14 +1512,13 @@ class Bedwars extends PluginBase implements Listener {
 ############################################################################################################
 ############################################################################################################
 class BWRefreshSigns extends PluginTask {
-
+//Updated need fix start game and others PluginTask = Task
     public $prefix = "";
     public $plugin;
 
     public function __construct(Bedwars $plugin) {
         $this->plugin = $plugin;
         $this->prefix = $this->plugin->prefix;
-        parent::__construct($plugin);
     }
 
     public function onRun($tick) {
@@ -1568,7 +1567,6 @@ class BWGameSender extends PluginTask {
     public function __construct(Bedwars $plugin) {
         $this->plugin = $plugin;
         $this->prefix = $plugin->prefix;
-        parent::__construct($plugin);
     }
 
     public function onRun($tick) {
