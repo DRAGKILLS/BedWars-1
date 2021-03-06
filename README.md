@@ -1,13 +1,9 @@
-# BedWars v0.1
-
-# Use at Your own risk!
-This plugin may not work on Genisys, The code work on ImagicalMine, Has never been tested on other pm versions!
-
-# Test Server!
-This plugin is not running on our server yet
-
+# BedWars v0.50
 # Authors
->Original Author: BluPlayz
+>Original Authors:
+>
+>BluPlayz
+>
 >Fixed By: HixX
 >
 >EpicSteve33
@@ -19,11 +15,16 @@ This plugin is not running on our server yet
 **/bw or /bw** Displays all of the possible commands!
 
 # Contact Info
->his old now is deleted
+>his old kik now is deleted
+>
 >**Kik: EpicSteve33**
 >
->old
+>his old
+>
 >Kik: EnderPE1
+>
+# Discord Fixer
+>DRAGKILLS#0001
 
 ```html
    Message us if you have any ideas or issues
@@ -31,7 +32,7 @@ This plugin is not running on our server yet
 
 # Other Info
 
-This plugin has not been tested, if you run into this problem please make sure you contact me right away so me and my team can help you with your problems, also we are be working on other minigames this isn't our only project, also this version is not stable
+This plugin has not been tested, if you run into this problem please make sure you contact me right away, also this version is stable
 
 # Todo list
 
