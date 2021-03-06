@@ -8,6 +8,7 @@ This plugin is not running on our server yet
 
 # Authors
 >Original Author: BluPlayz
+>Fixed By: HixX
 >
 >EpicSteve33
 >
@@ -15,12 +16,13 @@ This plugin is not running on our server yet
 
 # Commands:
 
-**/BedWars or /BW** Displays all of the possible commands!
+**/bw or /bw** Displays all of the possible commands!
 
 # Contact Info
-
+>his old now is deleted
 >**Kik: EpicSteve33**
 >
+>old
 >Kik: EnderPE1
 
 ```html
@@ -33,8 +35,8 @@ This plugin has not been tested, if you run into this problem please make sure y
 
 # Todo list
 
-- [ ] Make plugin work/work better
+- [✓] Make plugin work/work better
 - [ ] Fix Grammer Issues
 - [ ] Make Stable Genisys Version
-- [x] Test it (This Plugin Was Tested on ImagicalMine Only)
+- [x] Test it (This Plugin Was Tested on PocketMine Only)
 - [x] Translate %100
