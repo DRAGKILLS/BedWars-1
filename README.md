@@ -36,7 +36,7 @@ This plugin has not been tested, if you run into this problem please make sure y
 
 # Todo list
 
-- [✓] Make plugin work/work better
+- [ ✓ ] Make plugin work/work better
 - [ ] Fix Grammer Issues
 - [ ] Make Stable Genisys Version
 - [x] Test it (This Plugin Was Tested on PocketMine Only)
