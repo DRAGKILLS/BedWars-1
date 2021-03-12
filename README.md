@@ -12,7 +12,7 @@
 
 # Commands:
 
-**/bw or /bw** Displays all of the possible commands!
+**/bw Displays all of the possible commands!
 
 # Contact Info
 >his old kik now is deleted
@@ -22,9 +22,6 @@
 >his old
 >
 >Kik: EnderPE1
->
-# Discord Fixer
->DRAGKILLS#0001
 
 ```html
    Message us if you have any ideas or issues
