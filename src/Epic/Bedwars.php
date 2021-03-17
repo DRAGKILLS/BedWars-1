@@ -1736,7 +1736,7 @@ class BWGameSender extends PluginTask {
                             foreach ($tiles as $tile) {
                                 if ($tile instanceof Sign) {
                                     $text = $tile->getText();
-                                    if ($text[0] == "gold" || $text[1] == "gold" || $text[2]) == "gold" || $text[3]) == "gold") {
+                                    if ($text[0] == "gold" || $text[1] == "gold" || $text[2] == "gold" || $text[3]) == "gold") {
                                         $level->dropItem(new Vector3($tile->getX() + 0.5, $tile->getY() + 2, $tile->getZ() + 0.5), Item::get(Item::GOLD_INGOT, 0, 1));
                                     }
                                 }
