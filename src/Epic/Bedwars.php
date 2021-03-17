@@ -740,7 +740,7 @@ class Bedwars extends PluginBase implements Listener {
 
     public function onTransaction(InventoryTransactionEvent $event)
     {
-        $trans = $event->getInventory()->getTransactions();
+        $trans = $event->getTransactions();
         $inv = $event->getInventories();
 
         $player = null;
@@ -1488,8 +1488,8 @@ class Bedwars extends PluginBase implements Listener {
                 $this->getServer()->dispatchCommand($sender, "bw help");
             }
         }
+       return true;
     }
-
 }
 ############################################################################################################
 ############################################################################################################
