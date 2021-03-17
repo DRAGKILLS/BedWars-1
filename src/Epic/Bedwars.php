@@ -200,7 +200,15 @@ class Bedwars extends PluginBase implements Listener {
     }
     public function getPlayers($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
-    }
+        $playersXXX = $config->get("Players");
+        $players = array();
+        foreach ($playersXXX as $x){
+            if($x != "steve steve"){
+                $players[] = $x;
+            }
+        }
+        return $players;
+      }
     public function getTeam($pn){
 
         $pn = str_replace("§", "", $pn);
