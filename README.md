@@ -1,4 +1,13 @@
 # BedWars v0.50
+# Setup generators and shop spawn
+**Everything In sign**
+>SHOP for spawn the villager shop
+>
+>bronze spawn the bronze
+>
+>iron spawn the iron
+>
+>gold spawn the gold
 # Authors
 >Original Authors:
 >
