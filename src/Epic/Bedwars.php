@@ -200,18 +200,6 @@ class Bedwars extends PluginBase implements Listener {
     }
     public function getPlayers($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
-
-        $playersXXX = $config->get("Players");
-
-        $players = array();
-
-        foreach ($playersXXX as $x){
-            if($x != "steve steve"){
-                $players[] = $x;
-            }
-        }
-
-        return $players;
     }
     public function getTeam($pn){
 
@@ -487,7 +475,6 @@ class Bedwars extends PluginBase implements Listener {
         $p->setFood(20);
         $p->setGamemode(0);
         $p->getInventory()->clearAll();
-        $p->setExpLevel(0);
 
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
@@ -1336,7 +1323,7 @@ class Bedwars extends PluginBase implements Listener {
             if($sender instanceof Player){
                 if($this->inArena($sender)){
                 if(!$sender->hasPermission("bw.forcestart")){
-                break;
+                return false;
              }
                     $arena = $this->getArena($sender);
 
@@ -1352,7 +1339,7 @@ class Bedwars extends PluginBase implements Listener {
          if($cmd->getName() == "bw"){
            if($sender instanceof Player){
            if(!$sender->isOP()){
-          break;
+          return false;
        }
     }
             if(!empty($args[0])){
@@ -1483,7 +1470,8 @@ class Bedwars extends PluginBase implements Listener {
                         $sender->sendMessage(TextFormat::RED."/bw setspawn <ArenaName> <Team>");
                     }
                 }
-                elseif($args[0] == "test" && $sender->isOP()){
+                elseif($args[0] == "test"){
+                    if(!$sender->isOp())return false;
                     $this->createVillager($sender->getX(), $sender->getY(), $sender->getZ(), $sender->getLevel());
                 } else {
                     $this->getServer()->dispatchCommand($sender, "bw help");
@@ -1736,7 +1724,7 @@ class BWGameSender extends PluginTask {
                             foreach ($tiles as $tile) {
                                 if ($tile instanceof Sign) {
                                     $text = $tile->getText();
-                                    if ($text[0] == "gold" || $text[1] == "gold" || $text[2] == "gold" || $text[3]) == "gold") {
+                                    if ($text[0] == "gold" || $text[1] == "gold" || $text[2] == "gold" || $text[3] == "gold") {
                                         $level->dropItem(new Vector3($tile->getX() + 0.5, $tile->getY() + 2, $tile->getZ() + 0.5), Item::get(Item::GOLD_INGOT, 0, 1));
                                     }
                                 }
@@ -1767,7 +1755,7 @@ class BWGameSender extends PluginTask {
                                 }
                             }
                         }
-                        elseif($gametimer == 2||$gametimer == 3 || $gametimer==4||$gametimer==5||$gametimer==15||$gametimer==30||$gametimer==60){
+                        elseif($gametimer == 2 || $gametimer == 3 || $gametimer == 4 || $gametimer == 5 || $gametimer == 15 || $gametimer == 30 || $gametimer == 60){
                             foreach($players as $pn){
                                 $p = $this->plugin->getServer()->getPlayerExact($pn);
                                 if($p != null){
@@ -1810,13 +1798,7 @@ class BWGameSender extends PluginTask {
                         $config->set("EndTimer", $endtimer);
                         $config->save();
 
-                        if($endtimer == 15 ||
-                            $endtimer == 10 ||
-                            $endtimer == 5 ||
-                            $endtimer == 4 ||
-                            $endtimer == 3 ||
-                            $endtimer == 2 ||
-                            $endtimer == 1){
+                        if($endtimer == 15 || $endtimer == 10 || $endtimer == 5 || $endtimer == 4 || $endtimer == 3 || $endtimer == 2 || $endtimer == 1){
 
                             foreach($players as $pn){
                                 $p = $this->plugin->getServer()->getPlayerExact($pn);
