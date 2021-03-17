@@ -1,4 +1,4 @@
-# BedWars v0.50
+# BedWars v0.1
 # Setup generators and shop spawn
 **Everything In sign**
 >SHOP for spawn the villager shop
