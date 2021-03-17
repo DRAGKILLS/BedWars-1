@@ -113,6 +113,54 @@ class Bedwars extends PluginBase implements Listener {
         }
         $this->breakableblocks = $cfg->get("BreakableBlocks");
         $shop = new Config($this->getDataFolder()."shop.yml", Config::YAML);
+        if ($shop->get("Shop") == null) {
+                $shop->set("Shop", array(
+                    Item::WOODEN_SWORD,
+                    array(
+                        array(
+                            Item::STICK, 1, 384, 8
+                        ),
+                        array(
+                            Item::WOODEN_SWORD, 1, 384, 12
+                        ),
+                        array(
+                            Item::STONE_SWORD, 1, 384, 20
+                        ),
+                        array(
+                            Item::IRON_SWORD, 1, 384, 40
+                        )
+                    ),
+                    Item::SANDSTONE,
+                    array(
+                        array(
+                            Item::SANDSTONE, 4, 384, 1
+                        ),
+                        array(
+                            Item::GLASS, 6, 384, 1
+                        )
+                    ),
+                    Item::LEATHER_TUNIC,
+                    array(
+                        array(
+                            Item::LEATHER_CAP, 1, 384, 2
+                        ),
+                        array(
+                            Item::LEATHER_PANTS, 1, 384, 4
+                        ),
+                        array(
+                            Item::LEATHER_BOOTS, 1, 384, 2
+                        ),
+                        array(
+                            Item::LEATHER_TUNIC, 1, 384, 8
+                        ),
+                        array(
+                            Item::CHAIN_CHESTPLATE, 1, 384, 20
+                        )
+                    )
+                )
+            );
+            $shop->save();
+        }
         $this->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
 
