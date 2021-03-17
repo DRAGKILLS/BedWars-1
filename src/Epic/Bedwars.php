@@ -70,6 +70,7 @@ class Bedwars extends PluginBase implements Listener {
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::RED."Loaded!");
+        $this->getLogger()->alert("§lEnabled By BluPlayz Fixed By HixX");
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder()."Arenas");
         @mkdir($this->getDataFolder()."Maps");
@@ -608,6 +609,8 @@ class Bedwars extends PluginBase implements Listener {
         return "WHITE";
     }
     public function openShop(Player $player){
+        $chestBlock = new \pocketmine\block\Chest();
+        $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 4, $player->getZ()), $chestBlock, true, true);
         $nbt = new CompoundTag("", [
             new ListTag("Items", []),
             new StringTag("id", Tile::CHEST),
@@ -1114,7 +1117,7 @@ class Bedwars extends PluginBase implements Listener {
                         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
                         if($config->get("Status") == "Lobby"){
-                            $event->setCancelled();
+                            $event->setCancelled(true);
                         } else {
                             if($this->getTeam($damager->getNameTag()) == $this->getTeam($player->getNameTag())){
                                 $event->setCancelled();
@@ -1154,14 +1157,14 @@ class Bedwars extends PluginBase implements Listener {
             $config = new Config($this->getDataFolder() . "Arenas/" . $arena . ".yml", Config::YAML);
 
             if($config->get("Status") == "Lobby"){
-                $event->setCancelled();
+                $event->setCancelled(true);
 
                 if($block->getId() == Block::WOOL){
                     $item = Item::get($block->getId(), $block->getDamage(), 1);
 
                     $arena = $this->getArena($player);
                     $team = $this->getTeamByBlockDamage($block->getDamage());
-                    $event->setCancelled();
+                    $event->setCancelled(true);
                     if($team != $this->getTeam($player->getNameTag())){
                         if (in_array($team, $this->getAvailableTeams($arena))) {
                             $player->setNameTag($this->getTeamColor($team) . $name);
