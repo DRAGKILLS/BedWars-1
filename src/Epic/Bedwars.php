@@ -66,7 +66,7 @@ class Bedwars extends PluginBase implements Listener {
 
     public function onEnable(){
 
-        //Entity::registerEntity(Villager::class, true);
+        Entity::registerEntity(Shop::class, true);
 
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::RED."Loaded!");
