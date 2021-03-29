@@ -2,7 +2,9 @@
 
 namespace Epic;
 
-class Shop
+use pocketmine\entity\Human;
+
+class Shop extends Human
 {
 
 }
