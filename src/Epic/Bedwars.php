@@ -65,16 +65,15 @@ class Bedwars extends PluginBase implements Listener {
     public $breakableblocks = array();
 
     public function onEnable(){
-
-        Entity::registerEntity(Shop::class, true);
-
+        Entity::registerEntity(Shop::class);
+        $this->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
+        $this->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::RED."Loaded!");
         $this->getLogger()->alert("§lEnabled By BluPlayz Fixed By HixX");
         @mkdir($this->getDataFolder());
         @mkdir($this->getDataFolder()."Arenas");
         @mkdir($this->getDataFolder()."Maps");
-
         $files = scandir($this->getDataFolder()."Arenas");
         foreach($files as $filename){
             if($filename != "." && $filename != ".."){
@@ -101,7 +100,7 @@ class Bedwars extends PluginBase implements Listener {
             $cfg->save();
         }
         if(empty($cfg->get("GameTimer"))){
-            $cfg->set("GameTimer", 30*60 +1);
+            $cfg->set("GameTimer", 30);
             $cfg->save();
         }
         if(empty($cfg->get("EndTimer"))){
@@ -162,17 +161,7 @@ class Bedwars extends PluginBase implements Listener {
             );
             $shop->save();
         }
-        $this->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
-        $this->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
-
     }
-    ############################################################################################################
-    ############################################################################################################
-    ############################################################################################################
-    #################################    ===[Own Functions]===     #########################################
-    ############################################################################################################
-    ############################################################################################################
-    ############################################################################################################
     public function copymap($src, $dst) {
         $dir = opendir($src);
         @mkdir($dst);
@@ -203,14 +192,11 @@ class Bedwars extends PluginBase implements Listener {
         $playersXXX = $config->get("Players");
         $players = array();
         foreach ($playersXXX as $x){
-            if($x != "steve steve"){
                 $players[] = $x;
-            }
         }
         return $players;
       }
     public function getTeam($pn){
-
         $pn = str_replace("§", "", $pn);
         $pn = str_replace(TextFormat::ESCAPE, "", $pn);
         $color = $pn{0};
@@ -498,15 +484,14 @@ class Bedwars extends PluginBase implements Listener {
     }
     public function getAllTeams(){
         $teams = array(
-            "BLUE",//1
-            "RED",//2
-            "GREEN",//3
-            "YELLOW",//4
-
-            "PURPLE",//5
-            "BLACK",//6
-            "GRAY",//7
-            "AQUA"//8
+            "BLUE",
+            "RED",
+            "GREEN",
+            "YELLOW",
+            "PURPLE",
+            "BLACK",
+            "GRAY",
+            "AQUA"
         );
         return $teams;
     }
@@ -605,7 +590,7 @@ class Bedwars extends PluginBase implements Listener {
     }
     public function openShop(Player $player){
         $chestBlock = new \pocketmine\block\Chest();
-        $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY() - 4, $player->getZ()), $chestBlock, true, true);
+        $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY()-4, $player->getZ()), $chestBlock, true, true);
         $nbt = new CompoundTag("", [
             new ListTag("Items", []),
             new StringTag("id", Tile::CHEST),
@@ -1316,14 +1301,6 @@ class Bedwars extends PluginBase implements Listener {
         }
 
     }
-    ############################################################################################################
-    ############################################################################################################
-    ############################################################################################################
-    ###################################    ===[COMMANDS]===     ################################################
-    ############################################################################################################
-    ############################################################################################################
-    ############################################################################################################
-
     public function onCommand(CommandSender $sender, Command $cmd, $label, array $args): bool{
 
         $name = $sender->getName();
@@ -1354,7 +1331,7 @@ class Bedwars extends PluginBase implements Listener {
                 if(strtolower($args[0]) == "help"){
                     $sender->sendMessage(TextFormat::GRAY."===============");
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw help ".TextFormat::GRAY."[".TextFormat::RED."Displays all commands for Bedwars".TextFormat::GRAY."]");
-                    $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw regsign <Arena> ".TextFormat::GRAY."[".TextFormat::RED."Registers Signs for an Arenas".TextFormat::GRAY."]");
+                    $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw joinsign <Arena> ".TextFormat::GRAY."[".TextFormat::RED."Registers Signs for an Arenas".TextFormat::GRAY."]");
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw savemaps <Arena> ".TextFormat::GRAY."[".TextFormat::RED."Saves the Map of an Arena".TextFormat::GRAY."]");
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw addarena <ArenaName> <Teams> <PlayerProTeam> ".TextFormat::GRAY."[".TextFormat::RED."Adds Arenas".TextFormat::GRAY."]");
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw setlobby <Arena>".TextFormat::GRAY."[".TextFormat::RED."set arenalobby".TextFormat::GRAY."]");
@@ -1362,7 +1339,7 @@ class Bedwars extends PluginBase implements Listener {
                     $sender->sendMessage(TextFormat::GRAY."-> ".TextFormat::DARK_AQUA."/bw setbed <Arena> <Team>".TextFormat::GRAY."[".TextFormat::RED."Sets Beds For team".TextFormat::GRAY."]");
                     $sender->sendMessage(TextFormat::GRAY."===============");
                 }
-                elseif($args[0] == "regsign"){
+                elseif($args[0] == "joinsign"){
                     if(!empty($args[1])) {
                         $arena = $args[1];
                         if($this->arenaExists($arena)) {
@@ -1508,7 +1485,7 @@ class BWRefreshSigns extends PluginTask {
         $this->prefix = $this->plugin->prefix;
     }
 
-    public function onRun($tick) {
+    public function onRun(int $tick) {
         $levels = $this->plugin->getServer()->getDefaultLevel();
         $tiles = $levels->getTiles();
         foreach ($tiles as $t) {
@@ -1525,8 +1502,8 @@ class BWRefreshSigns extends PluginTask {
 
                     $arenasign = $text[1];
 
-                    $teams = (int) $config->get("Teams");
-                    $ppt = (int) $config->get("PlayersPerTeam");
+                    $teams = $config->get("Teams");
+                    $ppt = $config->get("PlayersPerTeam");
 
                     $maxplayers = $teams * $ppt;
                     $ingame = TextFormat::GREEN."To Enter";
@@ -1556,7 +1533,7 @@ class BWGameSender extends PluginTask {
         $this->prefix = $plugin->prefix;
     }
 
-    public function onRun($tick) {
+    public function onRun(int $tick) {
 
         $files = scandir($this->plugin->getDataFolder()."Arenas");
         foreach($files as $filename){
@@ -1566,12 +1543,12 @@ class BWGameSender extends PluginTask {
                 $cfg = new Config($this->plugin->getDataFolder()."config.yml", Config::YAML);
                 $players = $this->plugin->getPlayers($arena);
                 $status = $config->get("Status");
-                $teams = (int) $config->get("Teams");
-                $ppt = (int) $config->get("PlayersPerTeam");
-                $lobbytimer = (int) $config->get("LobbyTimer");
-                $gametimer = (int) $config->get("GameTimer");
-                $endtimer = (int) $config->get("EndTimer");
-                $maxplayers = (int) $teams * $ppt;
+                $teams = $config->get("Teams");
+                $ppt = $config->get("PlayersPerTeam");
+                $lobbytimer = $config->get("LobbyTimer");
+                $gametimer = $config->get("GameTimer");
+                $endtimer = $config->get("EndTimer");
+                $maxplayers = $teams * $ppt;
                 $welt = $this->plugin->getFigthWorld($arena);
                 $level = $this->plugin->getServer()->getLevelByName($welt);
 
@@ -1581,9 +1558,9 @@ class BWGameSender extends PluginTask {
 
                 /*
                 if((Time() % 20) == 0){
-                    $this->plugin->Debug(TextFormat::GREEN."== Players Array ==");
+                    $this->plugin->getServer()->debug(TextFormat::GREEN."== Players Array ==");
                     var_dump($players);
-                    $this->plugin->Debug(TextFormat::GREEN."== Players Array ==");
+                    $this->plugin->getServer()->debug(TextFormat::GREEN."== Players Array ==");
                 }
                 */
                 if($status == "Lobby"){
@@ -1624,10 +1601,10 @@ class BWGameSender extends PluginTask {
                         $config->set("LobbyTimer", $lobbytimer);
                         $config->save();
 
-                        if($lobbytimer == 60 ||
-                            $lobbytimer == 45 ||
-                            $lobbytimer == 30 ||
+                        if($lobbytimer == 30 ||
+                            $lobbytimer == 25 ||
                             $lobbytimer == 20 ||
+                            $lobbytimer == 15 ||
                             $lobbytimer == 10
                         ){
                             foreach($players as $pn){
