@@ -45,5 +45,5 @@ This plugin has not been tested, if you run into this problem please make sure y
 - [ ] Make plugin work/work better
 - [ ] Fix Grammer Issues
 - [ ] Make Stable Genisys Version
-- [x] Test it (This Plugin Was Tested on PocketMine Only)
+- [x] Test it (This Plugin Was Tested on test server Only)
 - [x] Translate %100
