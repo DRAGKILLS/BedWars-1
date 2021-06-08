@@ -59,13 +59,13 @@ class Bedwars extends PluginBase implements Listener {
     public $registerBedTeam = "WHITE";
     public $mode = 0;
     public $arena = "Arena1";
-    public $lasthit = array();
-    public $pickup = array();
-    public $isShopping = array();
-    public $breakableblocks = array();
+    public $lasthit = [];
+    public $pickup = [];
+    public $isShopping = [];
+    public $breakableblocks = [];
 
     public function onEnable(){
-        Entity::registerEntity(Shop::class);
+        //Entity::registerEntity(Shop::class, true);
         $this->getScheduler()->scheduleRepeatingTask(new BWRefreshSigns($this), 20);
         $this->getScheduler()->scheduleRepeatingTask(new BWGameSender($this), 20);
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
@@ -114,54 +114,55 @@ class Bedwars extends PluginBase implements Listener {
         $this->breakableblocks = $cfg->get("BreakableBlocks");
         $shop = new Config($this->getDataFolder()."shop.yml", Config::YAML);
         if ($shop->get("Shop") == null) {
-                $shop->set("Shop", array(
+                $shop->set("Shop", [
                     Item::WOODEN_SWORD,
-                    array(
-                        array(
+                    [
+                        [
                             Item::STICK, 1, 384, 8
-                        ),
-                        array(
+                        ],
+                        [
                             Item::WOODEN_SWORD, 1, 384, 12
-                        ),
-                        array(
+                        ],
+                        [
                             Item::STONE_SWORD, 1, 384, 20
-                        ),
-                        array(
+                        ],
+                        [
                             Item::IRON_SWORD, 1, 384, 40
-                        )
-                    ),
+                        ]
+                    ],
                     Item::SANDSTONE,
-                    array(
-                        array(
+                    [
+                        [
                             Item::SANDSTONE, 4, 384, 1
-                        ),
-                        array(
+                        ],
+                        [
                             Item::GLASS, 6, 384, 1
-                        )
+                        ]
                     ),
                     Item::LEATHER_TUNIC,
-                    array(
-                        array(
+                    [
+                        [
                             Item::LEATHER_CAP, 1, 384, 2
-                        ),
-                        array(
+                        ],
+                        [
                             Item::LEATHER_PANTS, 1, 384, 4
-                        ),
-                        array(
+                        ],
+                        [
                             Item::LEATHER_BOOTS, 1, 384, 2
-                        ),
-                        array(
+                        ],
+                        [
                             Item::LEATHER_TUNIC, 1, 384, 8
-                        ),
-                        array(
+                        ],
+                        [
                             Item::CHAIN_CHESTPLATE, 1, 384, 20
-                        )
-                    )
-                )
-            );
+                        ]
+                    ]
+                ]
+            ];
             $shop->save();
         }
     }
+
     public function copymap($src, $dst) {
         $dir = opendir($src);
         @mkdir($dst);
@@ -190,7 +191,7 @@ class Bedwars extends PluginBase implements Listener {
     public function getPlayers($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         $playersXXX = $config->get("Players");
-        $players = array();
+        $players = [];
         foreach ($playersXXX as $x){
                 $players[] = $x;
         }
@@ -208,7 +209,7 @@ class Bedwars extends PluginBase implements Listener {
 
         $players = $this->getPlayers($arena);
 
-        $availableTeams = array();
+        $availableTeams = [];
 
         $ppt = (int) $config->get("PlayersPerTeam");
 
@@ -269,6 +270,7 @@ class Bedwars extends PluginBase implements Listener {
 
         return $array;
     }
+
     public function getAvailableTeam($arena){
 
         $teams = $this->getAvailableTeams($arena);
@@ -303,6 +305,7 @@ class Bedwars extends PluginBase implements Listener {
 
         return $alive;
     }
+
     public function convertColorToTeam($color){
 
         if($color == "9")return "BLUE";
@@ -355,7 +358,6 @@ class Bedwars extends PluginBase implements Listener {
         $config->set("GameTimer", $cfg->get("GameTimer"));
         $config->set("EndTimer", $cfg->get("EndTimer"));
         $config->set("Status", "Lobby");
-        $config->set("Players", array("steve steve"));
         $config->save();
         foreach($this->getTeams($arena) as $team){
             $config->setNested("Bed.".$team.".Alive", true);
@@ -373,7 +375,7 @@ class Bedwars extends PluginBase implements Listener {
         $config->set("GameTimer", $cfg->get("GameTimer"));
         $config->set("EndTimer", $cfg->get("EndTimer"));
         $config->set("Status", "Lobby");
-        $config->set("Players", array("steve steve"));
+        //$config->set("Players", array("steve steve"));
         $config->set("Teams", $teams);
         $config->set("PlayersPerTeam", $ppt);
         $config->save();
@@ -1041,7 +1043,7 @@ class Bedwars extends PluginBase implements Listener {
                         }
                     }
                 } else {
-                    $event->setDrops(array());
+                    $event->setDrops([]);
                     foreach ($players as $pn) {
                         $p = $this->getServer()->getPlayerExact($pn);
                         if($p != null) {
@@ -1325,8 +1327,8 @@ class Bedwars extends PluginBase implements Listener {
            if($sender instanceof Player){
            if(!$sender->isOP()){
           return false;
+         }
        }
-    }
             if(!empty($args[0])){
                 if(strtolower($args[0]) == "help"){
                     $sender->sendMessage(TextFormat::GRAY."===============");
