@@ -147,7 +147,7 @@ class Bedwars extends PluginBase implements Listener {
                         [
                             Item::GLASS, 6, 384, 1
                         ]
-                    ),
+                    ],
                     Item::LEATHER_TUNIC,
                     [
                         [
@@ -186,6 +186,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         closedir($dir);
     }
+
     public function getTeams($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         $array = array();
@@ -197,6 +198,7 @@ class Bedwars extends PluginBase implements Listener {
 
         return $array;
     }
+
     public function getPlayers($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         $playersXXX = $config->get("Players");
@@ -206,12 +208,14 @@ class Bedwars extends PluginBase implements Listener {
         }
         return $players;
       }
+
     public function getTeam($pn){
         $pn = str_replace("§", "", $pn);
         $pn = str_replace(TextFormat::ESCAPE, "", $pn);
         $color = $pn{0};
         return $this->convertColorToTeam($color);
     }
+
     public function getAvailableTeams($arena){
         $teams = $this->getTeams($arena);
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
@@ -391,6 +395,7 @@ class Bedwars extends PluginBase implements Listener {
 
         $this->getLogger()->info(TextFormat::GREEN."Arena ".TextFormat::AQUA.$arena.TextFormat::GREEN." was created successfully!");
     }
+
     public function resetMaps($arena){
         $levels = $this->getArenaWorlds($arena);
         foreach($levels as $levelname){
@@ -402,6 +407,7 @@ class Bedwars extends PluginBase implements Listener {
             $this->getServer()->loadLevel($levelname);
         }
     }
+
     public function saveMaps($arena){
         $levels = $this->getArenaWorlds($arena);
         foreach($levels as $levelname){
@@ -409,6 +415,7 @@ class Bedwars extends PluginBase implements Listener {
             $this->copymap($this->getServer()->getDataPath() . "worlds/" . $levelname, $this->getDataFolder() . "Maps/" . $levelname);
         }
     }
+
     public function getFigthWorld($arena){
         $level = "noWorld";
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
@@ -419,11 +426,13 @@ class Bedwars extends PluginBase implements Listener {
 
         return $level;
     }
+
     public function getWarteLobby($arena){
         $levels = array();
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         return $config->getNested("Spawn.Lobby.Welt");
     }
+
     public function getArenaWorlds($arena){
         $levels = array();
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
@@ -439,6 +448,7 @@ class Bedwars extends PluginBase implements Listener {
 
         return $levels;
     }
+
     public function setSpawn($arena, $team, Player $p){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
@@ -450,6 +460,7 @@ class Bedwars extends PluginBase implements Listener {
         $config->setNested("Spawn.".$team.".Pitch", $p->getPitch());
         $config->save();
     }
+
     public function setLobby($arena, Player $p){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
@@ -461,6 +472,7 @@ class Bedwars extends PluginBase implements Listener {
         $config->setNested("Spawn.Lobby.Pitch", $p->getPitch());
         $config->save();
     }
+
     public function arenaExists($arena){
         $files = scandir($this->getDataFolder()."Arenas");
         foreach($files as $filename){
@@ -536,7 +548,7 @@ class Bedwars extends PluginBase implements Listener {
                 }
             }
         }
-        return "-";
+        return null;
     }
     public function inArena(Player $p){
         $files = scandir($this->getDataFolder()."Arenas");
@@ -920,7 +932,7 @@ class Bedwars extends PluginBase implements Listener {
                     foreach ($players as $pn) {
                         $p = $this->getServer()->getPlayerExact($pn);
                         if ($p != null) {
-                            $p->sendMessage(TextFormat::GRAY . "[" . TextFormat::GREEN . "SHOUT" . TextFormat::GRAY . "] " . $player->getNameTag() . TextFormat::GRAY . " >> " . TextFormat::WHITE . $msg);
+                            $p->sendMessage(TextFormat::GRAY . "[" . TextFormat::GREEN . "SHOUT" . TextFormat::GRAY . "] " . $player->getNametag() . TextFormat::GRAY . " >> " . TextFormat::WHITE . $msg);
                         }
                     }
                 } else {
@@ -930,7 +942,7 @@ class Bedwars extends PluginBase implements Listener {
                         if ($p != null) {
                             if ($this->getTeam($p->getNameTag()) == $this->getTeam($player->getNameTag())) {
                                 //teamchat
-                                $p->sendMessage(TextFormat::GRAY . "[" . $this->getTeamColor($this->getTeam($player->getNameTag())) . "Team" . TextFormat::GRAY . "] " . $player->getNameTag() . TextFormat::GRAY . " >> " . TextFormat::WHITE . $msg);
+                                $p->sendMessage(TextFormat::GRAY . "[" . $this->getTeamColor($this->getTeam($player->getNametag())) . "Team" . TextFormat::GRAY . "] " . $player->getNameTag() . TextFormat::GRAY . " >> " . TextFormat::WHITE . $msg);
                             }
                         }
                     }
@@ -1129,7 +1141,7 @@ class Bedwars extends PluginBase implements Listener {
             $cause = $player->getLastDamageCause();
             $players = $this->getPlayers($arena);
 
-            if($player->getY() <= 4){
+            if($player->getY() <= 6){
                 $player->setHealth(0);
             }
 
@@ -1313,7 +1325,6 @@ class Bedwars extends PluginBase implements Listener {
 
     }
     public function onCommand(CommandSender $sender, Command $cmd, $label, array $args): bool{
-
         $name = $sender->getName();
         if($cmd->getName() == "start"){
             if($sender instanceof Player){
@@ -1568,7 +1579,7 @@ class BWGameSender extends PluginTask {
                 $minplayers = $ppt +1;
 
                 /*
-                if((Time() % 20) == 0){
+                if((time() % 20) == 0){
                     $this->plugin->getServer()->debug(TextFormat::GREEN."== Players Array ==");
                     var_dump($players);
                     $this->plugin->getServer()->debug(TextFormat::GREEN."== Players Array ==");
@@ -1578,7 +1589,7 @@ class BWGameSender extends PluginTask {
 
                     if(count($players) < $minplayers){
 
-                        if((Time() % 10) == 0){
+                        if((time() % 10) == 0){
                             $config->set("LobbyTimer", $cfg->get("LobbyTimer"));
                             $config->set("GameTimer", $cfg->get("GameTimer"));
                             $config->set("EndTimer", $cfg->get("EndTimer"));
@@ -1596,7 +1607,7 @@ class BWGameSender extends PluginTask {
                             }
                         }
 
-                        if((Time() % 20) == 0){
+                        if((time() % 20) == 0){
                             foreach($players as $pn){
                                 $p = $this->plugin->getServer()->getPlayerExact($pn);
                                 if($p != null) {
@@ -1679,7 +1690,7 @@ class BWGameSender extends PluginTask {
                         $config->save();
                     } else {
 
-                        if ((Time() % 1) == 0) {
+                        if ((time() % 1) == 0) {
                             $tiles = $level->getTiles();
                             foreach ($tiles as $tile) {
                                 if ($tile instanceof Sign) {
@@ -1704,7 +1715,7 @@ class BWGameSender extends PluginTask {
                                 }
                             }
                         }
-                        if ((Time() % 8) == 0) {
+                        if ((time() % 8) == 0) {
                             $tiles = $level->getTiles();
                             foreach ($tiles as $tile) {
                                 if ($tile instanceof Sign) {
@@ -1715,7 +1726,7 @@ class BWGameSender extends PluginTask {
                                 }
                             }
                         }
-                        if ((Time() % 30) == 0) {
+                        if ((time() % 30) == 0) {
                             $tiles = $level->getTiles();
                             foreach ($tiles as $tile) {
                                 if ($tile instanceof Sign) {
