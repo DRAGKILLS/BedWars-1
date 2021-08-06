@@ -1,11 +1,11 @@
 <?php
 
 /**
-____  ____      _    ____ _  _____ _     _     ____
-|  _ \|  _ \    / \  / ___| |/ /_ _| |   | |   / ___|
-| | | | |_) |  / _ \| |  _| ' / | || |   | |   \___ \
-| |_| |  _ <  / ___ \ |_| | . \ | || |___| |___ ___) |
-|____/|_| \_\/_/   \_\____|_|\_\___|_____|_____|____/
+ * ____  ____      _    ____ _  _____ _     _     ____
+ * |  _ \|  _ \    / \  / ___| |/ /_ _| |   | |   / ___|
+ * | | | | |_) |  / _ \| |  _| ' / | || |   | |   \___ \
+ * | |_| |  _ <  / ___ \ |_| | . \ | || |___| |___ ___) |
+ * |____/|_| \_\/_/   \_\____|_|\_\___|_____|_____|____/
 */
 
 
@@ -80,28 +80,26 @@ class Bedwars extends PluginBase implements Listener {
         $this->getServer()->getPluginManager()->registerEvents($this, $this);
         $this->getLogger()->info(TextFormat::RED."Loaded!");
         $this->getLogger()->alert("§lEnabled By BluPlayz Fixed By HixX");
-        @mkdir($this->getDataFolder());
-        @mkdir($this->getDataFolder()."Arenas");
-        @mkdir($this->getDataFolder()."Maps");
-        $files = scandir($this->getDataFolder()."Arenas");
-        foreach($files as $filename){
-            if($filename != "." && $filename != ".."){
-                $filename = str_replace(".yml", "", $filename);
-
-                $this->resetArena($filename);
-
-                $levels = $this->getArenaWorlds($filename);
-                foreach($levels as $levelname){
-                    $level = $this->getServer()->getLevelByName($levelname);
-                    if($level instanceof Level){
-                        $this->getServer()->unloadLevel($level);
-                    }
-                    $this->copymap($this->getDataFolder() . "Maps/" . $levelname, $this->getServer()->getDataPath() . "worlds/" . $levelname);
-                    $this->getServer()->loadLevel($levelname);
+        @mkdir($this->getDataFolder(), 0777, true);
+        if(!is_dir($this->getDataFolder()."Arenas")){
+            @mkdir($this->getDataFolder()."Arenas");
+        }
+        if(!is_dir($this->getDataFolder()."Maps")){
+            @mkdir($this->getDataFolder()."Maps");
+        }
+        foreach(glob($this->getDataFolder()."Arenas/*.yml") as $file){
+            $filename = basename($file, ".yml");
+            $this->resetArena($filename);
+            $levels = $this->getArenaWorlds($filename);
+            foreach($levels as $levelname){
+                $level = $this->getServer()->getLevelByName($levelname);
+                if($level instanceof Level){
+                    $this->getServer()->unloadLevel($level);
                 }
-
-                $this->getServer()->loadLevel($this->getWarteLobby($filename));
+                $this->copymap($this->getDataFolder() . "Maps/" . $levelname, $this->getServer()->getDataPath() . "worlds/" . $levelname);
+                $this->getServer()->loadLevel($levelname);
             }
+            $this->getServer()->loadLevel($this->getWarteLobby($filename));
         }
         $cfg = new Config($this->getDataFolder()."config.yml", Config::YAML);
         if(empty($cfg->get("LobbyTimer"))){
@@ -189,7 +187,7 @@ class Bedwars extends PluginBase implements Listener {
 
     public function getTeams($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
-        $array = array();
+        $array = [];
         foreach($this->getAllTeams() as $team){
             if(!empty($config->getNested("Spawn.".$team))){
                 $array[] = $team;
@@ -212,7 +210,7 @@ class Bedwars extends PluginBase implements Listener {
     public function getTeam($pn){
         $pn = str_replace("§", "", $pn);
         $pn = str_replace(TextFormat::ESCAPE, "", $pn);
-        $color = $pn{0};
+        $color = $pn[0];
         return $this->convertColorToTeam($color);
     }
 
@@ -294,7 +292,7 @@ class Bedwars extends PluginBase implements Listener {
         }
     }
     public function getAliveTeams($arena){
-        $alive = array();
+        $alive = [];
 
         $teams = $this->getTeams($arena);
         $players = $this->getPlayers($arena);
@@ -379,6 +377,7 @@ class Bedwars extends PluginBase implements Listener {
 
         $this->getLogger()->info(TextFormat::GREEN."Arena ".TextFormat::AQUA.$arena.TextFormat::GREEN." wurde Erfolgreich geladen!");
     }
+                           
     public function createArena($arena, $teams, $ppt){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
@@ -388,7 +387,7 @@ class Bedwars extends PluginBase implements Listener {
         $config->set("GameTimer", $cfg->get("GameTimer"));
         $config->set("EndTimer", $cfg->get("EndTimer"));
         $config->set("Status", "Lobby");
-        //$config->set("Players", array("steve steve"));
+        $config->set("Players", []);
         $config->set("Teams", $teams);
         $config->set("PlayersPerTeam", $ppt);
         $config->save();
@@ -417,7 +416,7 @@ class Bedwars extends PluginBase implements Listener {
     }
 
     public function getFigthWorld($arena){
-        $level = "noWorld";
+        $level = "null";
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
         foreach($this->getTeams($arena) as $team){
@@ -434,7 +433,7 @@ class Bedwars extends PluginBase implements Listener {
     }
 
     public function getArenaWorlds($arena){
-        $levels = array();
+        $levels = [];
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
 
         foreach($this->getAllTeams() as $team){
@@ -641,7 +640,7 @@ class Bedwars extends PluginBase implements Listener {
         $x += 0.5;
         $z += 0.5;
 
-        $nbt = new CompoundTag();
+        $nbt = new CompoundTag;
         $nbt->Pos = new ListTag("Pos", [
             new DoubleTag("", $x),
             new DoubleTag("", $y),
