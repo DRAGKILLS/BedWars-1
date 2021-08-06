@@ -13,7 +13,7 @@
 >
 >BluPlayz
 >
->Fixed By: HixX
+>Fixed By: DRAGKILLS
 >
 >EpicSteve33
 >
