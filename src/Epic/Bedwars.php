@@ -748,7 +748,7 @@ class Bedwars extends PluginBase implements Listener {
     public function onTransaction(InventoryTransactionEvent $event)
     {
         $trans = $event->getTransactions();
-        $inv = $event->getInventories();
+        $inv = $trans->getInventories();
 
         $player = null;
         $chestBlock = null;
