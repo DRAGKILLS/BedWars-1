@@ -205,7 +205,7 @@ class Bedwars extends PluginBase implements Listener {
                 $players[] = $x;
         }
         return $players;
-      }
+    }
 
     public function getTeam($pn){
         $pn = str_replace("§", "", $pn);
@@ -242,7 +242,7 @@ class Bedwars extends PluginBase implements Listener {
             $teamcount = 0;
         }
 
-        $array = array();
+        $array = [];
         $teamcount = 0;
         $teamcount2 = 0;
         foreach($availableTeams as $team){
@@ -485,6 +485,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         return false;
     }
+    
     public function TeleportToWaitingLobby($arena, Player $p){
 
         $p->setHealth(20);
@@ -504,8 +505,9 @@ class Bedwars extends PluginBase implements Listener {
         $p->teleport($this->getServer()->getLevelByName($welt)->getSafeSpawn(), 0, 0);
         $p->teleport(new Vector3($x, $y, $z), $yaw, $pitch);
     }
+                           
     public function getAllTeams(){
-        $teams = array(
+        $teams = [
             "BLUE",
             "RED",
             "GREEN",
@@ -514,12 +516,14 @@ class Bedwars extends PluginBase implements Listener {
             "BLACK",
             "GRAY",
             "AQUA"
-        );
+        ];
         return $teams;
     }
-    public function Debug($debug){
-        $this->getLogger()->info($debug);
+                           
+    public function Debug($message){
+        $this->getLogger()->alert($message);
     }
+                           
     public function addPlayerToArena($arena, $name){
 
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
@@ -530,11 +534,13 @@ class Bedwars extends PluginBase implements Listener {
 
         $config->set("Players", $players);
         $config->save();
-        //$this->getLogger()->info("Player: ".$name." , was in arena -> ".$arena." ");
+        $this->getLogger()->info("Player: ".$name." , is in arena -> ".$arena." ");
     }
+                           
     public function removePlayerFromArena($arena, $name){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
     }
+                           
     public function getArena(Player $p){
         $files = scandir($this->getDataFolder()."Arenas");
         foreach($files as $filename){
@@ -549,6 +555,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         return null;
     }
+                           
     public function inArena(Player $p){
         $files = scandir($this->getDataFolder()."Arenas");
         foreach($files as $filename){
@@ -563,6 +570,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         return false;
     }
+                           
     public function TeleportToTeamSpawn(Player $p, $team, $arena){
         $p->setHealth(20);
         $p->setFood(20);
@@ -583,6 +591,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         $p->teleport(new Vector3($x, $y, $z), $yaw, $pitch);
     }
+                           
     public function getTeamByBlockDamage($damage){
         if($damage == 10){
             return "PURPLE";
@@ -610,6 +619,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         return "WHITE";
     }
+                           
     public function openShop(Player $player){
         $chestBlock = new \pocketmine\block\Chest();
         $player->getLevel()->setBlock(new Vector3($player->getX(), $player->getY()-4, $player->getZ()), $chestBlock, true, true);
@@ -636,31 +646,46 @@ class Bedwars extends PluginBase implements Listener {
             $player->addWindow($tile->getInventory());
         }
     }
+                           
     public function createVillager($x, $y, $z, Level $level){
         $x += 0.5;
         $z += 0.5;
 
-        $nbt = new CompoundTag;
-        $nbt->Pos = new ListTag("Pos", [
+        $nbt = new CompoundTag("", [
+            "Pos", [
             new DoubleTag("", $x),
             new DoubleTag("", $y),
             new DoubleTag("", $z)
-        ]);
-
-        $nbt->Rotation = new ListTag("Rotation", [
+        ]),
+            "Rotation", [
             new FloatTag("", 0),
             new FloatTag("", 0)
+        ]),
+            new ShortTag("Health", 10),
+            new StringTag("CustomName", TextFormat::GOLD."SHOP"),
+            new ByteTag("CustomNameVisible", 1)
         ]);
+//         $nbt->Pos = new ListTag("Pos", [
+//             new DoubleTag("", $x),
+//             new DoubleTag("", $y),
+//             new DoubleTag("", $z)
+//         ]);
 
-        $nbt->Health = new ShortTag("Health", 10);
-        $nbt->CustomName = new StringTag("CustomName", TextFormat::GOLD."SHOP");
-        $nbt->CustomNameVisible = new ByteTag("CustomNameVisible", 1);
+//         $nbt->Rotation = new ListTag("Rotation", [
+//             new FloatTag("", 0),
+//             new FloatTag("", 0)
+//         ]);
+
+//         $nbt->Health = new ShortTag("Health", 10);
+//         $nbt->CustomName = new StringTag("CustomName", TextFormat::GOLD."SHOP");
+//         $nbt->CustomNameVisible = new ByteTag("CustomNameVisible", 1);
 
         $level->loadChunk($x >> 4, $z >> 4);
 
         $villager = Entity::createEntity("Villager", $level->getChunk($x >> 4, $y >> 4), $nbt);
         $villager->spawnToAll();
     }
+                           
     public function getWoolDamageByTeam($team){
         if($team == "BLUE"){
             return 11;
@@ -688,6 +713,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         return 0;
     }
+                           
     public function setTeamSelectionItems(Player $player, $arena){
         $player->getInventory()->clearAll();
 
@@ -700,12 +726,14 @@ class Bedwars extends PluginBase implements Listener {
             $player->getInventory()->addItem(Item::get(Item::WOOL, $teamwool, 1));
         }
     }
+                           
     public function getArenaStatus($arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         $status = $config->get("Status");
 
         return $status;
     }
+                           
     public function sendIngameScoreboard(Player $p, $arena){
         $config = new Config($this->getDataFolder()."Arenas/".$arena.".yml", Config::YAML);
         $popup = TextFormat::GRAY." [".TextFormat::GOLD."TeamsAlive".TextFormat::GRAY."]\n";
@@ -737,6 +765,7 @@ class Bedwars extends PluginBase implements Listener {
         }
         $p->sendPopup($popup);
     }
+                           
     ############################################################################################################
     ############################################################################################################
     ############################################################################################################
@@ -870,6 +899,7 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onItemDrop(PlayerDropItemEvent $event){
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -902,6 +932,7 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onChat(PlayerChatEvent $event){
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -949,6 +980,7 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onInvClose(InventoryCloseEvent $event){
         $inventory = $event->getInventory();
         if ($inventory instanceof ChestInventory) {
@@ -963,12 +995,14 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onJoin(PlayerJoinEvent $event){
         $player = $event->getPlayer();
         $this->lasthit[$player->getName()] = "no";
         $this->isShopping[$player->getName()] = "no";
         $player->setNameTag($player->getName());
     }
+                           
     public function onRespawn(PlayerRespawnEvent $event){
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -998,43 +1032,44 @@ class Bedwars extends PluginBase implements Listener {
             }
 
         }
+        //     public function onPickup(InventoryPickupItemEvent $event){
+//         $player = $event->getInventory()->getHolder();
+
+//         if($player instanceof Player){
+//             if($this->inArena($player)){
+
+//                 if(!in_array($event->getItem()->getId(), $this->pickup)) {
+//                     if ($event->getItem()->getItem()->getId() == Item::BRICK) {
+
+//                         $event->setCancelled();
+
+//                         $player->getLevel()->removeEntity($event->getItem());
+//                         $this->pickup[] = $event->getItem()->getId();
+//                         $player->setExpLevel($player->getExpLevel() + 1);
+//                         $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "1 Level!");
+//                     }
+
+//                     if ($event->getItem()->getItem()->getId() == Item::IRON_INGOT) {
+//                         $event->setCancelled();
+//                         $player->getLevel()->removeEntity($event->getItem());
+//                         $this->pickup[] = $event->getItem()->getId();
+//                         $player->setExpLevel($player->getExpLevel() + 10);
+//                         $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "10 Level!");
+//                     }
+
+//                     if ($event->getItem()->getItem()->getId() == Item::GOLD_INGOT) {
+//                         $event->setCancelled();
+//                         $player->getLevel()->removeEntity($event->getItem());
+//                         $this->pickup[] = $event->getItem()->getId();
+//                         $player->setExpLevel($player->getExpLevel() + 20);
+//                         $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "20 Level!");
+//                     }
+//                 }
+//             }
+//         }
+//     }
     }
-    public function onPickup(InventoryPickupItemEvent $event){
-        $player = $event->getInventory()->getHolder();
-
-        if($player instanceof Player){
-            if($this->inArena($player)){
-
-                if(!in_array($event->getItem()->getId(), $this->pickup)) {
-                    if ($event->getItem()->getItem()->getId() == Item::BRICK) {
-
-                        $event->setCancelled();
-
-                        $player->getLevel()->removeEntity($event->getItem());
-                        $this->pickup[] = $event->getItem()->getId();
-                        $player->setExpLevel($player->getExpLevel() + 1);
-                        $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "1 Level!");
-                    }
-
-                    if ($event->getItem()->getItem()->getId() == Item::IRON_INGOT) {
-                        $event->setCancelled();
-                        $player->getLevel()->removeEntity($event->getItem());
-                        $this->pickup[] = $event->getItem()->getId();
-                        $player->setExpLevel($player->getExpLevel() + 10);
-                        $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "10 Level!");
-                    }
-
-                    if ($event->getItem()->getItem()->getId() == Item::GOLD_INGOT) {
-                        $event->setCancelled();
-                        $player->getLevel()->removeEntity($event->getItem());
-                        $this->pickup[] = $event->getItem()->getId();
-                        $player->setExpLevel($player->getExpLevel() + 20);
-                        $player->sendTip(TextFormat::GOLD . "+" . TextFormat::GREEN . "20 Level!");
-                    }
-                }
-            }
-        }
-    }
+                           
     public function onDeath(PlayerDeathEvent $event){
         $player = $event->getEntity();
         if($player instanceof Player){
@@ -1046,7 +1081,7 @@ class Bedwars extends PluginBase implements Listener {
 
                 if ($cause instanceof EntityDamageByEntityEvent) {
                     $killer = $cause->getDamager();
-                    $event->setDrops(array());
+                    $event->setDrops([]);
                     if ($killer instanceof Player) {
                         foreach ($players as $pn) {
                             $p = $this->getServer()->getPlayerExact($pn);
@@ -1133,6 +1168,7 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onMove(PlayerMoveEvent $event){
         $player = $event->getPlayer();
         if($this->inArena($player)){
@@ -1146,7 +1182,6 @@ class Bedwars extends PluginBase implements Listener {
 
         }
     }
-
 
     public function onPlace(BlockPlaceEvent $event){
         $player = $event->getPlayer();
@@ -1192,6 +1227,7 @@ class Bedwars extends PluginBase implements Listener {
             }
         }
     }
+                           
     public function onBreak(BlockBreakEvent $event){
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -1245,6 +1281,7 @@ class Bedwars extends PluginBase implements Listener {
 
         }
     }
+                           
     public function onInteract(PlayerInteractEvent $event){
         $player = $event->getPlayer();
         $name = $player->getName();
@@ -1323,6 +1360,7 @@ class Bedwars extends PluginBase implements Listener {
         }
 
     }
+                           
     public function onCommand(CommandSender $sender, Command $cmd, $label, array $args): bool{
         $name = $sender->getName();
         if($cmd->getName() == "start"){
@@ -1489,6 +1527,7 @@ class Bedwars extends PluginBase implements Listener {
        return true;
     }
 }
+                           
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
@@ -1496,8 +1535,9 @@ class Bedwars extends PluginBase implements Listener {
 ############################################################################################################
 ############################################################################################################
 ############################################################################################################
+                           
 class BWRefreshSigns extends PluginTask {
-//Updated need fix start game and others PluginTask = Task
+//Updated need fix start game players teleport and others PluginTask = Task : fixed
     public $prefix = "";
     public $plugin;
 
@@ -1544,6 +1584,7 @@ class BWRefreshSigns extends PluginTask {
         }
     }
 }
+                           
 class BWGameSender extends PluginTask {
 
     public $prefix = "";
@@ -1751,7 +1792,7 @@ class BWGameSender extends PluginTask {
                         $config->set("GameTimer", $gametimer);
                         $config->save();
 
-                        if($gametimer==900||$gametimer==600|| $gametimer==300|| $gametimer==240 || $gametimer==180){
+                        if($gametimer==900 || $gametimer==600 || $gametimer==300 || $gametimer==240 || $gametimer==180){
                             foreach($players as $pn){
                                 $p = $this->plugin->getServer()->getPlayerExact($pn);
                                 if($p != null){
