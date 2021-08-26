@@ -162,10 +162,9 @@ class Bedwars extends PluginBase implements Listener {
                         ],
                         [
                             Item::CHAIN_CHESTPLATE, 1, 384, 20
-                        ]
+                        ], 
                     ]
-                ]
-            ];
+            ]);
             $shop->save();
         }
     }
@@ -651,20 +650,20 @@ class Bedwars extends PluginBase implements Listener {
         $x += 0.5;
         $z += 0.5;
 
-        $nbt = new CompoundTag("", [
-            "Pos", [
-            new DoubleTag("", $x),
-            new DoubleTag("", $y),
-            new DoubleTag("", $z)
-        ]),
-            "Rotation", [
-            new FloatTag("", 0),
-            new FloatTag("", 0)
-        ]),
-            new ShortTag("Health", 10),
-            new StringTag("CustomName", TextFormat::GOLD."SHOP"),
-            new ByteTag("CustomNameVisible", 1)
-        ]);
+  //      $nbt = new CompoundTag("", [
+ //           "Pos", [
+  ///          new DoubleTag("", $x),
+   //         new DoubleTag("", $y),
+  //         new DoubleTag("", $z)
+    //    ]),
+     //       "Rotation", [
+       ///       new FloatTag("", 0),
+       //     new FloatTag("", 0)
+ ///       ]),
+      //      new ShortTag("Health", 10),
+  /////          new StringTag("CustomName", TextFormat::GOLD."SHOP"),
+    //        new ByteTag("CustomNameVisible", 1)
+    //    ]);
 //         $nbt->Pos = new ListTag("Pos", [
 //             new DoubleTag("", $x),
 //             new DoubleTag("", $y),
@@ -682,8 +681,8 @@ class Bedwars extends PluginBase implements Listener {
 
         $level->loadChunk($x >> 4, $z >> 4);
 
-        $villager = Entity::createEntity("Villager", $level->getChunk($x >> 4, $y >> 4), $nbt);
-        $villager->spawnToAll();
+       // $villager = Entity::createEntity("Villager", $level->getChunk($x >> 4, $y >> 4), $nbt);
+     //   $villager->spawnToAll();
     }
                            
     public function getWoolDamageByTeam($team){
@@ -776,7 +775,7 @@ class Bedwars extends PluginBase implements Listener {
 
     public function onTransaction(InventoryTransactionEvent $event)
     {
-        $trans = $event->getTransactions();
+        $trans = $event->getTransaction();
         $inv = $trans->getInventories();
 
         $player = null;
@@ -1875,5 +1874,4 @@ class BWGameSender extends PluginTask {
             }
         }
     }
-
 }
